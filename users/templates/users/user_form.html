@@ -1,0 +1,27 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <form class="row" method="POST" enctype="multipart/form-data">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="card shadow-sm">
+                <h3 class="card-title">
+                    Редактирование профиля
+                </h3>
+                <div class="card-body">
+                    {% csrf_token %}
+                    {% crispy form %}
+<!--                    {{ form.as_p }}-->
+                    <button type="submit" class="btn btn-primary">
+                        Сохранить
+                    </button>
+                    <a href="{% url 'catalog:home' %}"
+                    class="btn btn-primary">Выйти</a>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
