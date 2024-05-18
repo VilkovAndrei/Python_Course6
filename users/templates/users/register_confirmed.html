@@ -6,7 +6,7 @@
         <div class="col-lg-4 col-sm-12">
             <h2>Учётная запись активирована.</h2>
             <p>Ваша электронная почта была подтверждена успешно.</p>
-            <a href="{% url 'users:profile' %}" class="btn btn-primary my-btn mb-3">
+            <a href="{% url 'users:profile' user.email %}" class="btn btn-primary my-btn mb-3">
                 Перейти в профиль
             </a>
         </div>

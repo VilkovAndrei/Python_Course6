@@ -1,13 +1,13 @@
 import secrets
 
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
@@ -95,3 +95,7 @@ class UserPasswordResetView(PasswordResetView):
 
         return super().form_valid(form)
 
+
+def logout_view(request):
+    logout(request)
+    return redirect('/') # на главную страницу сайта
