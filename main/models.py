@@ -11,7 +11,7 @@ NULLABLE = {'blank': True, 'null': True}
 class Client(models.Model):
     email = models.EmailField(max_length=150, unique=True, verbose_name='Почта')
     name = models.CharField(max_length=100, verbose_name='ФИО или Наименование')
-    comments = models.TextField(verbose_name='Комментарий', **NULLABLE)
+    comment = models.TextField(verbose_name='Комментарий', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
 
     def __repr__(self):
