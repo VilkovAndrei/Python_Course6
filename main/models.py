@@ -50,17 +50,17 @@ class Mailing(models.Model):
         STARTED = "Запущена", "Запущена"
         COMPLETED = "Завершена", "Завершена"
 
-    create_time = models.DateTimeField(default=datetime.now(), verbose_name='Дата и время создания рассылки')
+    start_time = models.DateTimeField(default=datetime.now(), verbose_name='Дата и время старта рассылки')
     frequency_mailing = models.CharField(max_length=50, default=FrequencyMailing.ONE_DAY,
                                       choices=FrequencyMailing, verbose_name='Периодичность рассылки')
     status_mailing = models.CharField(max_length=50, default=StatusMailing.CREATED,
                                       choices=StatusMailing, verbose_name='Статус рассылки')
     clients = models.ManyToManyField(Client, verbose_name='Клиенты рассылки')
     message = models.ForeignKey(MessageMailing, on_delete=models.CASCADE, verbose_name='Сообщение', **NULLABLE)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользватель', null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
 
     def __repr__(self):
-        return f'{self.create_time} {self.frequency_mailing} {self.status_mailing}'
+        return f'{self.start_time} {self.frequency_mailing} {self.status_mailing}'
 
     class Meta:
         verbose_name = 'Рассылка'
