@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import request
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 
-from main.forms import ClientAddForm
-from main.models import Client
+from main.forms import ClientAddForm, MessageAddForm, MallingAddForm
+from main.models import Client, MessageMailing, Mailing, AttemptMailing
 
 
 class IndexView(TemplateView):
@@ -49,7 +49,7 @@ class ClientListView(LoginRequiredMixin, ListView):
         return context_data
 
 
-class ClientDetailtView(LoginRequiredMixin, DetailView):
+class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
 
     def get_context_data(self, *args, **kwargs):
@@ -90,5 +90,186 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
         context_data = super().get_context_data(*args, **kwargs)
 
         context_data['title'] = 'Удаление клиента'
+
+        return context_data
+
+
+class MessageMailingCreateView(LoginRequiredMixin, CreateView):
+    model = MessageMailing
+    form_class = MessageAddForm
+    success_url = reverse_lazy('main:message_list')
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Добавление сообщения'
+
+        return context_data
+
+    def form_valid(self, form):
+        owner = form.save()
+        owner.user = self.request.user
+        owner.save()
+
+        return super().form_valid(form)
+
+
+class MessageMailingListView(LoginRequiredMixin, ListView):
+    model = MessageMailing
+    template_name = "main/message_mailing_list.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        message = MessageMailing.objects.filter(owner=self.request.user)
+
+        # context_data['object_groups_user'] = str(self.request.user.groups.filter(name='manager'))
+        # context_data['object_groups'] = '<QuerySet [<Group: manager>]>'
+        context_data['object_list'] = message
+        context_data['title'] = 'Сообщения'
+
+        return context_data
+
+
+class MessageMailingDetailView(LoginRequiredMixin, DetailView):
+    model = MessageMailing
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Просмотр сообщения'
+
+        return context_data
+
+
+class MessageMailingUpdateView(LoginRequiredMixin, UpdateView):
+    model = MessageMailing
+    form_class = MessageAddForm
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Редактирование сообщения'
+
+        return context_data
+
+    def get_success_url(self):
+        return reverse('main:message_detail', args=[self.kwargs.get('pk')])
+
+
+class MessageMailingDeleteView(LoginRequiredMixin, DeleteView):
+    model = MessageMailing
+    success_url = reverse_lazy('main:message_list')
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Удаление сообщения'
+
+        return context_data
+
+
+class MailingCreateView(LoginRequiredMixin, CreateView):
+    model = Mailing
+    form_class = MallingAddForm
+    success_url = reverse_lazy('main:mailing_list')
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Добавление рассылки'
+
+        return context_data
+
+    def form_valid(self, form):
+        owner = form.save()
+        owner.user = self.request.user
+        owner.save()
+
+        return super().form_valid(form)
+
+
+class MailingListView(LoginRequiredMixin, ListView):
+    model = Mailing
+    template_name = "main/mailing_list.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        mailing = Mailing.objects.filter(owner=self.request.user)
+
+        # context_data['object_groups_user'] = str(self.request.user.groups.filter(name='manager'))
+        # context_data['object_groups'] = '<QuerySet [<Group: manager>]>'
+        context_data['object_list'] = mailing
+        context_data['title'] = 'Рассылки'
+
+        return context_data
+
+
+class MailingDetailView(LoginRequiredMixin, DetailView):
+    model = Mailing
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        mailing = Mailing.objects.all()
+
+        for mailing_clients in mailing:
+            context_data['object_client'] = mailing_clients.client.all()
+
+        context_data['title'] = 'Просмотр рассылки'
+
+        return context_data
+
+
+class MailingUpdateView(LoginRequiredMixin, UpdateView):
+    model = Mailing
+    form_class = MallingAddForm
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Добавление рассылки'
+
+        return context_data
+
+    def get_success_url(self):
+        return reverse('main:mailing_detail', args=[self.kwargs.get('pk')])
+
+
+class MailingDeleteView(LoginRequiredMixin, DeleteView):
+    model = Mailing
+    success_url = reverse_lazy('main:mailing_list')
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+
+        context_data['title'] = 'Удаление рассылки'
+
+        return context_data
+
+
+def close_the_mailing(request, pk):
+    mailing_item = get_object_or_404(Mailing, pk=pk)
+    if mailing_item.status_mailing == "Запущена":
+        mailing_item.status_mailing = "Завершена"
+
+    elif mailing_item.status_mailing == "Завершена":
+        mailing_item.status_mailing = "Запущена"
+
+    mailing_item.save()
+
+    return redirect(reverse('main:mailing_list'))
+
+
+class ReportListView(LoginRequiredMixin, ListView):
+    model = AttemptMailing
+    template_name = "main/report.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        report_list = AttemptMailing.objects.all()
+
+        # context_data['object_groups_user'] = str(self.request.user.groups.filter(name='manager'))
+        # context_data['object_groups'] = '<QuerySet [<Group: manager>]>'
+        context_data['object_list'] = report_list
+        context_data['title'] = 'Отчет'
 
         return context_data
