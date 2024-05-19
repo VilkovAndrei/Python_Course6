@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<div class="col-12 mb-5">
+<div class="col-12 mb-5 text-center">
 
-    <a class="bnt btn-outline-primary" href="{% url 'main:create_mailing'%}">Добавить рассылку</a>
+    <a class="btn btn-outline-primary mb-3" href="{% url 'main:create_mailing'%}">Добавить рассылку</a>
 
 </div>
 
@@ -22,24 +22,24 @@
 
         <div class="card-body">
             <p>Статус рассылки:</p>
-            <h2 class="card-title pricing-card-title">{{ object.status_mailing }}</h2>
+            <h4 class="card-title pricing-card-title">{{ object.status_mailing }}</h4>
 
             <div>
                 <p>Время отправки: {{ object.start_time }}</p>
                 <p>Период рассылки: {{ object.frequency_mailing }}</p>
-                <p>Тема сообщения: {{ object.message }}</p>
+                <p>Тема сообщения: {{ object.message.subject }}</p>
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
                 <div class="bnt-group">
 
-                    <a class="bnt btn-sm btn-outline-secondary" href="{% url 'main:mailing_detail' object.pk %}">Посмотреть</a>
+                    <a class="btn btn-outline-primary mb-3" href="{% url 'main:mailing_detail' object.pk %}">Посмотреть</a>
 
                     {% if not object or object.owner == user or user.is_superuser %}
 
-                        <a class="bnt btn-sm btn-outline-secondary" href="{% url 'main:mailing_edit' object.pk %}">Редактировать</a>
+                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:update_mailing' object.pk %}">Редактировать</a>
 
-                        <a class="bnt btn-sm btn-outline-secondary" href="{% url 'main:delete_mailing' object.pk %}">Удалить</a>
+                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:delete_mailing' object.pk %}">Удалить</a>
 
                     {% endif %}
 
@@ -48,11 +48,11 @@
                 {% if not object or object.owner == user or user.is_superuser %}
                     {% if object.status_mailing == 'Запущена' %}
 
-                        <a class="bnt btn-warning" href="{% url 'main:close_the_mailing' object.pk %}">Завершить рассылку</a>
+                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:close_the_mailing' object.pk %}">Завершить рассылку</a>
 
                     {% elif object.status_mailing == 'Завершена' %}
 
-                        <a class="bnt btn-success" href="{% url 'main:close_the_mailing' object.pk %}">Запустить рассылку</a>
+                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:close_the_mailing' object.pk %}">Запустить рассылку</a>
 
                     {% endif %}
                 {% endif %}

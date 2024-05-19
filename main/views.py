@@ -97,6 +97,7 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
 class MessageMailingCreateView(LoginRequiredMixin, CreateView):
     model = MessageMailing
     form_class = MessageAddForm
+    template_name = "main/message_mailing_form.html"
     success_url = reverse_lazy('main:message_list')
 
     def get_context_data(self, *args, **kwargs):
@@ -107,9 +108,9 @@ class MessageMailingCreateView(LoginRequiredMixin, CreateView):
         return context_data
 
     def form_valid(self, form):
-        owner = form.save()
-        owner.user = self.request.user
-        owner.save()
+        result = form.save()
+        result.owner = self.request.user
+        result.save()
 
         return super().form_valid(form)
 
@@ -132,6 +133,7 @@ class MessageMailingListView(LoginRequiredMixin, ListView):
 
 class MessageMailingDetailView(LoginRequiredMixin, DetailView):
     model = MessageMailing
+    template_name = "main/message_mailing_detail.html"
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
@@ -144,6 +146,7 @@ class MessageMailingDetailView(LoginRequiredMixin, DetailView):
 class MessageMailingUpdateView(LoginRequiredMixin, UpdateView):
     model = MessageMailing
     form_class = MessageAddForm
+    template_name = "main/message_mailing_form.html"
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
@@ -181,9 +184,9 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         return context_data
 
     def form_valid(self, form):
-        owner = form.save()
-        owner.user = self.request.user
-        owner.save()
+        result = form.save()
+        result.owner = self.request.user
+        result.save()
 
         return super().form_valid(form)
 
@@ -212,7 +215,7 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
         mailing = Mailing.objects.all()
 
         for mailing_clients in mailing:
-            context_data['object_client'] = mailing_clients.client.all()
+            context_data['object_client'] = mailing_clients.clients.all()
 
         context_data['title'] = 'Просмотр рассылки'
 
@@ -246,7 +249,7 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
         return context_data
 
 
-def close_the_mailing(request, pk):
+def close_or_start_the_mailing(request, pk):
     mailing_item = get_object_or_404(Mailing, pk=pk)
     if mailing_item.status_mailing == "Запущена":
         mailing_item.status_mailing = "Завершена"

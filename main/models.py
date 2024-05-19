@@ -14,7 +14,7 @@ class Client(models.Model):
     comment = models.TextField(verbose_name='Комментарий', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
 
-    def __repr__(self):
+    def __str__(self):
         return f'{self.name} {self.email}'
 
     class Meta:
@@ -28,7 +28,7 @@ class MessageMailing(models.Model):
     body = models.TextField(verbose_name='Текс сообщения', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
 
-    def __repr__(self):
+    def __str__(self):
         return self.subject
 
     class Meta:
@@ -59,7 +59,7 @@ class Mailing(models.Model):
     message = models.ForeignKey(MessageMailing, on_delete=models.CASCADE, verbose_name='Сообщение', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
 
-    def __repr__(self):
+    def __str__(self):
         return f'{self.start_time} {self.frequency_mailing} {self.status_mailing}'
 
     class Meta:
@@ -74,7 +74,7 @@ class AttemptMailing(models.Model):
     server_response = models.CharField(verbose_name='Ответ сервера', **NULLABLE)
     mailing = models.ForeignKey(Mailing, verbose_name='Рассылки', on_delete=models.CASCADE)
 
-    def __repr__(self):
+    def __str__(self):
         return f'{self.mailing} {self.time_last_mailing} {self.status}'
 
     class Meta:
