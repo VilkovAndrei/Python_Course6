@@ -1,15 +1,15 @@
-from django.contrib.auth.views import LoginView, PasswordResetDoneView, \
+from django.contrib.auth.views import PasswordResetDoneView, \
     PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import path, reverse_lazy
 
 from users import views
-from users.views import RegisterView, ProfileView, RegisterDoneView, RegisterConfirmView, UserPasswordResetView
-
+from users.views import RegisterView, ProfileView, RegisterDoneView, RegisterConfirmView, UserPasswordResetView, \
+    CustomLoginView
 
 app_name = 'users'
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('login/', CustomLoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('register_done/', RegisterDoneView.as_view(), name='register_done'),
