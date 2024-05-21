@@ -51,13 +51,15 @@ class Mailing(models.Model):
         COMPLETED = "Завершена", "Завершена"
 
     start_time = models.DateTimeField(default=datetime.now(), verbose_name='Дата и время старта рассылки')
+    stop_time = models.DateTimeField(default=None, verbose_name='Дата и время окончания рассылки', **NULLABLE)
     frequency_mailing = models.CharField(max_length=50, default=FrequencyMailing.ONE_DAY,
-                                      choices=FrequencyMailing, verbose_name='Периодичность рассылки')
+                                         choices=FrequencyMailing, verbose_name='Периодичность рассылки')
     status_mailing = models.CharField(max_length=50, default=StatusMailing.CREATED,
                                       choices=StatusMailing, verbose_name='Статус рассылки')
     clients = models.ManyToManyField(Client, verbose_name='Клиенты рассылки')
     message = models.ForeignKey(MessageMailing, on_delete=models.CASCADE, verbose_name='Сообщение', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
+    is_active = models.BooleanField(default=True, verbose_name='признак блокировки')
 
     def __str__(self):
         return f'{self.start_time} {self.frequency_mailing} {self.status_mailing}'

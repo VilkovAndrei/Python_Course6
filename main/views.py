@@ -229,7 +229,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
 
-        context_data['title'] = 'Добавление рассылки'
+        context_data['title'] = 'Редактирование рассылки'
 
         return context_data
 

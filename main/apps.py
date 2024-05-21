@@ -8,5 +8,6 @@ class MainConfig(AppConfig):
     name = 'main'
 
     def ready(self):
+        from main.management.commands import mailing
         sleep(2)
-        call_command("start_mailing")
+        mailing.start()

@@ -11,33 +11,44 @@ from main.models import Mailing, MessageMailing, AttemptMailing
 
 
 def send_mailing():
+    # print("Запущена попытка рассылок")
     frequency_mailing = ["Разовая", "Раз в день", "Раз в неделю", "Раз в месяц"]
     zone = pytz.timezone(settings.TIME_ZONE)
     current_datetime = datetime.now(zone)
-    mailings = Mailing.objects.filter(status_mailing="Запущена") #.filter(start_time=current_datetime)
+    mailings = Mailing.objects.filter(status_mailing__in=["Создана", "Запущена"]).filter(start_time__lte=current_datetime)
 
     for mailing in mailings:
         status = False
         server_response = "Нет ответа"
-        time_delta_mailing = current_datetime.day - mailing.start_time.day
+        time_delta_mailing = (current_datetime - mailing.start_time).days
+        # print(f"Таймдэльта = { time_delta_mailing }")
+        # print([client.email for client in mailing.clients.all()])
+
+        if mailing.stop_time > current_datetime:
+            mailing.status_mailing = "Завершена"
+            mailing.save()
+            continue
 
         try:
             send_mail(
-                    subject=MessageMailing.subject,
-                    message=MessageMailing.body,
+                    subject=mailing.message.subject,
+                    message=mailing.message.body,
                     from_email=settings.EMAIL_HOST_USER,
                     recipient_list=[client.email for client in mailing.clients.all()],
                     fail_silently=False
             )
+
+            if mailing.status_mailing == "Создана":
+                mailing.status_mailing = "Запущена"
             if mailing.frequency_mailing == frequency_mailing[0]:
                 mailing.status_mailing = "Завершена"
-            if mailing.frequency_mailing == frequency_mailing[1]:
+            if mailing.frequency_mailing == frequency_mailing[1] and time_delta_mailing >= 1:
                 mailing.start_time += timedelta(days=1)
 
-            elif mailing.frequency == frequency_mailing[2] and time_delta_mailing >= 7:
+            elif mailing.frequency_mailing == frequency_mailing[2] and time_delta_mailing >= 7:
                 mailing.start_time += timedelta(days=7)
 
-            elif mailing.frequency == frequency_mailing[3] and time_delta_mailing >= 30:
+            elif mailing.frequency_mailing == frequency_mailing[3] and time_delta_mailing >= 30:
                 mailing.start_time += timedelta(days=30)
 
             mailing.save()
@@ -52,12 +63,12 @@ def send_mailing():
         finally:
             AttemptMailing.objects.create(
                 mailing=mailing,
-                status_mailing=status,
+                status=status,
                 server_response=server_response,
             )
 
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(send_mailing, "interval", seconds=10)
+    scheduler.add_job(send_mailing, 'interval', seconds=60)
     scheduler.start()

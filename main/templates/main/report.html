@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+
+<div class="row text-center col-12">
+    <div class="card rounded-3 shadow-sm">
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Рассылки</th>
+                <th scope="col">Сообщение</th>
+                <th scope="col">Дата и время последней рассылки</th>
+                <th scope="col">Статус рассылки</th>
+                <th scope="col">Ответ сервера</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for object in object_list %}
+            <tr>
+                <td>{{ object.mailing }}</td>
+                <td>{{ object.mailing.message }}</td>
+                <td>{{ object.time_last_mailing }}</td>
+                <td>{{ object.status }}</td>
+                <td>{{ object.server_response }}</td>
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

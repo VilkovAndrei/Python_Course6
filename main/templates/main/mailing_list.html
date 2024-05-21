@@ -48,11 +48,11 @@
                 {% if not object or object.owner == user or user.is_superuser %}
                     {% if object.status_mailing == 'Запущена' %}
 
-                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:close_the_mailing' object.pk %}">Завершить рассылку</a>
+                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:close_or_start_the_mailing' object.pk %}">Завершить рассылку</a>
 
                     {% elif object.status_mailing == 'Завершена' %}
 
-                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:close_the_mailing' object.pk %}">Запустить рассылку</a>
+                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:close_or_start_the_mailing' object.pk %}">Запустить рассылку</a>
 
                     {% endif %}
                 {% endif %}
