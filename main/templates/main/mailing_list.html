@@ -23,42 +23,38 @@
         <div class="card-body">
             <p>Статус рассылки:</p>
             <h4 class="card-title pricing-card-title">{{ object.status_mailing }}</h4>
-
             <div>
                 <p>Время отправки: {{ object.start_time }}</p>
                 <p>Период рассылки: {{ object.frequency_mailing }}</p>
                 <p>Тема сообщения: {{ object.message.subject }}</p>
             </div>
-
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="bnt-group">
-
-                    <a class="btn btn-outline-primary mb-3" href="{% url 'main:mailing_detail' object.pk %}">Посмотреть</a>
-
-                    {% if not object or object.owner == user or user.is_superuser %}
-
-                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:update_mailing' object.pk %}">Редактировать</a>
-
-                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:delete_mailing' object.pk %}">Удалить</a>
-
+            {% if not object.is_active %}
+                <h6 class="my-0 fw-normal danger">Рассылка заблокирована!!!</h6>
+            {% else %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="bnt-group">
+                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:mailing_detail' object.pk %}">Посмотреть</a>
+                        {% if object.owner == user or user.is_superuser %}
+                            <a class="btn btn-outline-primary mb-3" href="{% url 'main:update_mailing' object.pk %}">Редактировать</a>
+                            <a class="btn btn-outline-danger mb-3" href="{% url 'main:delete_mailing' object.pk %}">Удалить</a>
+                        {% endif %}
+                    </div>
+                    {% if object.owner == user or user.is_superuser %}
+                        {% if object.status_mailing == 'Запущена' %}
+                            <a class="btn btn-outline-danger mb-3" href="{% url 'main:close_or_start_the_mailing' object.pk %}">Завершить рассылку</a>
+                        {% elif object.status_mailing == 'Завершена' %}
+                            <a class="btn btn-outline-primary mb-3" href="{% url 'main:close_or_start_the_mailing' object.pk %}">Запустить рассылку</a>
+                        {% endif %}
                     {% endif %}
-
+                    {% if user_is_manager %}:
+                        {% if object.is_active %}
+                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:blocked_the_mailing' object.pk %}">Заблокировать рассылку</a>
+                        {% else %}
+                        <a class="btn btn-outline-warning mb-3" href="{% url 'main:blocked_the_mailing' object.pk %}">Разблокировать рассылку</a>
+                        {% endif %}
+                    {% endif %}
                 </div>
-
-                {% if not object or object.owner == user or user.is_superuser %}
-                    {% if object.status_mailing == 'Запущена' %}
-
-                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:close_or_start_the_mailing' object.pk %}">Завершить рассылку</a>
-
-                    {% elif object.status_mailing == 'Завершена' %}
-
-                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:close_or_start_the_mailing' object.pk %}">Запустить рассылку</a>
-
-                    {% endif %}
-                {% endif %}
-
-
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>

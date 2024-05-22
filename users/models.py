@@ -21,6 +21,12 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        permissions = [
+            (
+                "set_user_is_blocked",
+                "Can set 'is_blocked' status"
+            )
+        ]
 
     def send_confirm_email(self, subject, message):
         send_mail(

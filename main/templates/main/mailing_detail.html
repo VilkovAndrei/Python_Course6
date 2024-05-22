@@ -12,6 +12,12 @@
                 <h4 class="my-0 fw-normal">Номер рассылки - {{ object.pk }}</h4>
             </div>
             <div class="card-body">
+                <div>
+                <p>Время отправки: {{ object.start_time }}</p>
+                <p>Период рассылки: {{ object.frequency_mailing }}</p>
+                <p>Тема сообщения: {{ object.message.subject }}</p>
+                <p>Текст сообщения: {{ object.message.body }}</p>
+                </div>
                 <p>
                     Клиенты для рассылок:
                 </p>

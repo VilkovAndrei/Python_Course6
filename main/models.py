@@ -76,8 +76,8 @@ class Mailing(models.Model):
 
         permissions = [
             (
-                "set_is_blocked_status",
-                "Can set 'is blocked' status"
+                "set_is_active_status",
+                "Can set 'is_active' status"
             )
         ]
 

@@ -197,7 +197,10 @@ class MailingListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
-        mailing = Mailing.objects.filter(owner=self.request.user)
+        if self.request.user.groups.filter(name='mailing_manager'):
+            mailing = Mailing.objects.all()
+        else:
+            mailing = Mailing.objects.filter(owner=self.request.user)
 
         # context_data['object_groups_user'] = str(self.request.user.groups.filter(name='manager'))
         # context_data['object_groups'] = '<QuerySet [<Group: manager>]>'
@@ -248,17 +251,24 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
 
         return context_data
 
+def blocked_the_mailing(request, pk):
+    """Блокирует или снимает блокировку с рассылки"""
+    mailing_item = get_object_or_404(Mailing, pk=pk)
+    if mailing_item.is_active:
+        mailing_item.is_active = False
+    elif not mailing_item.is_active:
+        mailing_item.is_active = True
+    mailing_item.save()
+    return redirect(reverse('main:mailing_list'))
 
 def close_or_start_the_mailing(request, pk):
+    """Завершает или запускает рассылку"""
     mailing_item = get_object_or_404(Mailing, pk=pk)
     if mailing_item.status_mailing == "Запущена":
         mailing_item.status_mailing = "Завершена"
-
     elif mailing_item.status_mailing == "Завершена":
         mailing_item.status_mailing = "Запущена"
-
     mailing_item.save()
-
     return redirect(reverse('main:mailing_list'))
 
 
