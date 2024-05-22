@@ -1,4 +1,4 @@
-from main.management.commands.mailing import start, send_mailing
+from main.management.commands.mailing import send_mailing
 from django.core.management import BaseCommand
 
 

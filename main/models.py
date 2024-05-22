@@ -9,6 +9,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 
 class Client(models.Model):
+    """Модель клиента сервиса рассылок"""
     email = models.EmailField(max_length=150, unique=True, verbose_name='Почта')
     name = models.CharField(max_length=100, verbose_name='ФИО или Наименование')
     comment = models.TextField(verbose_name='Комментарий', **NULLABLE)
@@ -24,6 +25,7 @@ class Client(models.Model):
 
 
 class MessageMailing(models.Model):
+    """Модель сообщения рассылки"""
     subject = models.CharField(max_length=150, verbose_name='Тема письма')
     body = models.TextField(verbose_name='Текс сообщения', **NULLABLE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
@@ -38,14 +40,17 @@ class MessageMailing(models.Model):
 
 
 class Mailing(models.Model):
+    """Модель рассылки"""
 
     class FrequencyMailing(models.TextChoices):
+        """Периодичность рассылки"""
         ONE_TIME = "Разовая", "Разовая"
         ONE_DAY = "Раз в день", "Раз в день"
         ONE_WEEK = "Раз в неделю", "Раз в неделю"
         ONE_MONTH = "Раз в месяц", "Раз в месяц"
 
     class StatusMailing(models.TextChoices):
+        """Статус рассылки"""
         CREATED = "Создана", "Создана"
         STARTED = "Запущена", "Запущена"
         COMPLETED = "Завершена", "Завершена"
@@ -69,8 +74,16 @@ class Mailing(models.Model):
         verbose_name_plural = 'Рассылки'
         ordering = ('id',)
 
+        permissions = [
+            (
+                "set_is_blocked_status",
+                "Can set 'is blocked' status"
+            )
+        ]
+
 
 class AttemptMailing(models.Model):
+    """Модель попытки рассылки"""
     time_last_mailing = models.DateTimeField(verbose_name='Дата и время последней попытки рассылки', auto_now_add=True)
     status = models.BooleanField(verbose_name='Статус попытки рассылки')
     server_response = models.CharField(verbose_name='Ответ сервера', **NULLABLE)
