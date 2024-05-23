@@ -197,8 +197,9 @@ class MailingListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
-        if self.request.user.groups.filter(name='mailing_manager'):
+        if self.request.user.groups.filter(name='mailing_manager') or self.request.user.is_superuser:
             mailing = Mailing.objects.all()
+            context_data['user_is_manager'] = True
         else:
             mailing = Mailing.objects.filter(owner=self.request.user)
 
@@ -278,10 +279,11 @@ class ReportListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
-        report_list = AttemptMailing.objects.all()
+        if self.request.user.is_superuser:
+            report_list = AttemptMailing.objects.all()
+        else:
+            report_list = AttemptMailing.objects.filter(mailing__owner=self.request.user)
 
-        # context_data['object_groups_user'] = str(self.request.user.groups.filter(name='manager'))
-        # context_data['object_groups'] = '<QuerySet [<Group: manager>]>'
         context_data['object_list'] = report_list
         context_data['title'] = 'Отчет'
 

@@ -40,7 +40,7 @@ class MessageMailing(models.Model):
 
 
 class Mailing(models.Model):
-    """Модель рассылки"""
+    """Модель рассылки (настройки рассылки)"""
 
     class FrequencyMailing(models.TextChoices):
         """Периодичность рассылки"""
@@ -55,7 +55,7 @@ class Mailing(models.Model):
         STARTED = "Запущена", "Запущена"
         COMPLETED = "Завершена", "Завершена"
 
-    start_time = models.DateTimeField(default=datetime.now(), verbose_name='Дата и время старта рассылки')
+    start_time = models.DateTimeField(default=datetime.now(), verbose_name='Дата и время следующего старта рассылки')
     stop_time = models.DateTimeField(default=None, verbose_name='Дата и время окончания рассылки', **NULLABLE)
     frequency_mailing = models.CharField(max_length=50, default=FrequencyMailing.ONE_DAY,
                                          choices=FrequencyMailing, verbose_name='Периодичность рассылки')

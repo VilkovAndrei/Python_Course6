@@ -15,7 +15,7 @@ def send_mailing():
     frequency_mailing = ["Разовая", "Раз в день", "Раз в неделю", "Раз в месяц"]
     zone = pytz.timezone(settings.TIME_ZONE)
     current_datetime = datetime.now(zone)
-    mailings = Mailing.objects.filter(status_mailing__in=["Создана", "Запущена"]).filter(start_time__lte=current_datetime).filter(is_blocked=False)
+    mailings = Mailing.objects.filter(status_mailing__in=["Создана", "Запущена"]).filter(start_time__lte=current_datetime).filter(is_active=True)
 
     for mailing in mailings:
         status = False
