@@ -1,16 +1,29 @@
+import random
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import request
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 
+from blog.models import Post
 from main.forms import ClientAddForm, MessageAddForm, MallingAddForm
 from main.models import Client, MessageMailing, Mailing, AttemptMailing
 
 
 class IndexView(TemplateView):
-    template_name = 'main/base.html'
+    template_name = 'main/home.html'
     extra_context = {'title': "Главная страница"}
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['mailing_count'] = Mailing.objects.all().count()
+        context_data['active_mailing_count'] = Mailing.objects.filter(status_mailing='Запущена').count()
+        post_list = list(Post.objects.all())
+        random.shuffle(post_list)
+        context_data['object_list'] = post_list[:3]
+        context_data['clients_count'] = Client.objects.all().count()
+        context_data['title'] = 'Главная'
+        return context_data
 
 
 class ClientCreateView(LoginRequiredMixin, CreateView):

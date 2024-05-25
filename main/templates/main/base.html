@@ -8,18 +8,23 @@
     <title>{{ title }}</title>
     <link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet"
           crossorigin="anonymous">
+<!--    <style>-->
+<!--            div{-->
+<!--                margin-left: 2px; /* отступ слева */-->
+<!--            }-->
+<!--    </style>-->
 </head>
 
-<body>
+<body style="color:Dark; background-color:rgba(200, 200, 200, 0.5); overflow-x: hidden">
 {% include 'main/includes/inc_menu.html' %}
 
 <script src="{% static 'main/js/bootstrap.bundle.min.js' %}"
         crossorigin="anonymous"></script>
 
 {% block content %} {% endblock %}
-<footer class="pt-4 my-md-5 pt-md-5 border-top">
+<footer class="pt-4 my-md-5 pt-md-5 ml-2 border-top">
     <div class="row">
-        <div class="col-12 col-md">
+        <div class="col-6 col-md">
             Education
             <small class="d-block mb-3 text-muted">&copy; 2024</small>
         </div>

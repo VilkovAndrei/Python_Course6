@@ -8,6 +8,6 @@ class MainConfig(AppConfig):
     name = 'main'
 
     def ready(self):
-        from main.management.commands import mailing
+        from main import services
         sleep(2)
-        mailing.start()
+        services.start()

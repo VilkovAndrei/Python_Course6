@@ -12,7 +12,6 @@ app_name = MainConfig.name
 
 
 urlpatterns = [
-    # path('', HomeListView.as_view(), name='home_list'),
     path('', IndexView.as_view(), name='home'),
     path('client_list/', ClientListView.as_view(), name='client_list'),
     path('add_client/', ClientCreateView.as_view(), name='create_client'),
