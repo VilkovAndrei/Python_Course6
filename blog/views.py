@@ -9,11 +9,11 @@ from blog.forms import PostForm
 from blog.models import Post
 
 
-class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
 
     model = Post
-    permission_required = 'blog.add_post'
-    form_class = PostForm
+    # permission_required = 'blog.add_post'
+    # form_class = PostForm
     fields = ('title', 'description', 'preview', 'is_published')
     extra_context = {'title': "Создание записи блога"}
 
@@ -30,9 +30,9 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    permission_required = 'blog.update_post'
+    # permission_required = 'blog.update_post'
     fields = ('title', 'description', 'preview', 'is_published')
     extra_context = {'title': "Редактирование записи блога"}
 

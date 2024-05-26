@@ -26,6 +26,7 @@
                     <p>Время окончания рассылки: {{ object.stop_time }}</p>
                     <p>Период рассылки: {{ object.frequency_mailing }}</p>
                     <p>Тема сообщения: {{ object.message.subject }}</p>
+                    <p>Автор: {{ object.owner }}</p>
                 </div>
                 {% if not object.is_active %}
                 <h6 class="my-0 fw-normal danger">Рассылка заблокирована!!!</h6>

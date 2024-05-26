@@ -1,7 +1,7 @@
 
 from django.core.management import BaseCommand
 
-from main.services import start
+from main.services import start, send_mailing
 
 
 class Command(BaseCommand):

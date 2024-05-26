@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('blog.urls', namespace='blog')),
     path('', include('users.urls', namespace='users')),
     path('', include('main.urls', namespace='main')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:
