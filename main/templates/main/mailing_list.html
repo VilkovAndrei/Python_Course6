@@ -22,7 +22,8 @@
                 <p>Статус рассылки:</p>
                 <h4 class="card-title pricing-card-title">{{ object.status_mailing }}</h4>
                 <div>
-                    <p>Время отправки: {{ object.start_time }}</p>
+                    <p>Время первой отправки: {{ object.start_time }}</p>
+                    <p>Время окончания рассылки: {{ object.stop_time }}</p>
                     <p>Период рассылки: {{ object.frequency_mailing }}</p>
                     <p>Тема сообщения: {{ object.message.subject }}</p>
                 </div>

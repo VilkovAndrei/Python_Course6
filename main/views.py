@@ -18,7 +18,7 @@ class IndexView(TemplateView):
         context_data = super().get_context_data(**kwargs)
         context_data['mailing_count'] = Mailing.objects.all().count()
         context_data['active_mailing_count'] = Mailing.objects.filter(status_mailing='Запущена').count()
-        post_list = list(Post.objects.all())
+        post_list = list(Post.objects.filter(is_published=True))
         random.shuffle(post_list)
         context_data['object_list'] = post_list[:3]
         context_data['clients_count'] = Client.objects.all().count()
@@ -161,6 +161,11 @@ class MessageMailingUpdateView(LoginRequiredMixin, UpdateView):
     form_class = MessageAddForm
     template_name = "main/message_mailing_form.html"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
 
@@ -189,12 +194,26 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     form_class = MallingAddForm
     success_url = reverse_lazy('main:mailing_list')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        # kwargs.update({'request': self.request})
+        return kwargs
+
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)
 
         context_data['title'] = 'Добавление рассылки'
+        context_data['form'].request = self.request
 
         return context_data
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        user = self.request.user
+        queryset = queryset.filter(owner=user)
+        return queryset
+
 
     def form_valid(self, form):
         result = form.save()
@@ -242,6 +261,18 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
 class MailingUpdateView(LoginRequiredMixin, UpdateView):
     model = Mailing
     form_class = MallingAddForm
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        user = self.request.user
+        queryset = queryset.filter(owner=user)
+        return queryset
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        # kwargs.update({'request': self.request})
+        return kwargs
 
     def get_context_data(self, *args, **kwargs):
         context_data = super().get_context_data(*args, **kwargs)

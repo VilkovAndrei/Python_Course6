@@ -29,13 +29,12 @@ class MessageAddForm(StyleFormMixin, forms.ModelForm):
 class MallingAddForm(StyleFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        # Получаем текущего пользователя из kwargs
-        self.request = kwargs.pop('request', None)
+        # request = (kwargs.pop('request', None))
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-
-        if self.request and self.request.user:
-            self.fields['clients'].queryset = Client.objects.filter(owner=self.request.user)
+        self.fields['clients'].queryset = Client.objects.filter(owner=user)
+        self.fields['message'].queryset = MessageMailing.objects.filter(owner=user)
 
     class Meta:
         model = Mailing
-        fields = ('start_time', 'frequency_mailing', 'status_mailing', 'clients', 'message')
+        fields = ('start_time', 'stop_time', 'frequency_mailing', 'status_mailing', 'clients', 'message')

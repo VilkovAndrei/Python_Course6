@@ -26,7 +26,7 @@ def send_mailing():
             time_last_successful_attempt = mailing.start_time
         time_delta_mailing = (current_datetime - time_last_successful_attempt).days
 
-        if mailing.stop_time > current_datetime:
+        if mailing.stop_time < current_datetime:
             mailing.status_mailing = "Завершена"
             mailing.save()
             continue

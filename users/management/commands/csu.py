@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
 
+from config.settings import PSQL_PSW
 from users.models import User
 
 
@@ -14,5 +15,5 @@ class Command(BaseCommand):
             is_superuser=True
         )
 
-        user.set_password('5w11q88pass')
+        user.set_password(PSQL_PSW)
         user.save()
