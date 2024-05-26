@@ -1,0 +1,53 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="col-12 mb-5 text-center">
+
+    <a class="btn btn-outline-primary mb-3" href="{% url 'main:create_message' %}">Добавить сообщение</a>
+
+</div>
+
+<main class="row">
+
+{% for object in object_list|slice:100 %}
+<!--    {% if not object or object.user == user or user.is_superuser or object_groups_user == object_groups %}-->
+
+<div class="row text-center col-4">
+    <div class="card rounded-3 shadow-sm">
+
+        <div class="card-header py-3">
+            <h4 class="my-0 fw-normal">{{ object.subject }} </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div>
+                <p>{{ object.body|slice:100 }}</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="bnt-group">
+
+                    <a class="btn btn-outline-primary mb-3" href="{% url 'main:message_detail' object.pk %}">Посмотреть</a>
+
+                    {% if not object or object.owner == user or user.is_superuser %}
+
+                        <a class="btn btn-outline-primary mb-3" href="{% url 'main:update_message' object.pk %}">Редактировать</a>
+
+                        <a class="btn btn-outline-danger mb-3" href="{% url 'main:delete_message' object.pk %}">Удалить</a>
+
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--    {% endif %}-->
+{% endfor %}
+
+</main>
+
+{% endblock %}

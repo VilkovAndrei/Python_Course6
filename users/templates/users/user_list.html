@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row">
+
+    {% for object in object_list %}
+    {% if object.pk != user.pk and not object.is_superuser %}
+
+    <div class="row text-center col-4">
+        <div class="card rounded-3 shadow-sm">
+
+            <div class="card-header py-3">
+                <h4 class="my-0 fw-normal">Пользователь - {{object.email}}</h4>
+            </div>
+
+            <div class="card-body">
+                <p>Телефон:</p>
+                <h4 class="card-title pricing-card-title">{{ object.phone }}</h4>
+                <div>
+                    <p>Комментарий: {{object.comment}}</p>
+                </div>
+                {% if object.is_blocked %}
+                <h6 class="my-0 fw-normal danger">Пользователь заблокирован!!!</h6>
+                {% endif %}
+                <div class="bnt-group">
+                    {% if mailing_manager or user.is_superuser %}
+                    {% if not object.is_blocked %}
+                    <a class="btn btn-outline-danger mb-3" href="{% url 'users:blocked_user' object.pk %}">Заблокировать
+                        пользователя</a>
+                    {% endif %}
+                    {% endif %}
+                    {% if mailing_manager or user.is_superuser %}
+                    {% if object.is_blocked %}
+                    <a class="btn btn-outline-warning mb-3" href="{% url 'users:blocked_user' object.pk %}">Разблокировать
+                        пользователя</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

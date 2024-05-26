@@ -1,0 +1,36 @@
+<!doctype html>
+{% load static %}
+{% load crispy_forms_tags %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+    <link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet"
+          crossorigin="anonymous">
+    <style>
+         img{
+        max-width:450px;
+        max-height:450px;
+    }
+    </style>
+</head>
+
+<body style="color:Dark; background-color:rgba(200, 200, 200, 0.5); overflow-x: hidden">
+{% include 'main/includes/inc_menu.html' %}
+
+<script src="{% static 'main/js/bootstrap.bundle.min.js' %}"
+        crossorigin="anonymous"></script>
+
+{% block content %} {% endblock %}
+<footer class="pt-4 my-md-5 pt-md-5 ml-2 border-top">
+    <div class="row">
+        <div class="col-6 col-md">
+            Education
+            <small class="d-block mb-3 text-muted">&copy; 2024</small>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

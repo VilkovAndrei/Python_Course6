@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<a class="bnt btn-sm btn-outline-secondary" href="{% url 'main:mailing_list' %}">Назад</a>
+
+<div class="row">
+
+    <div class="row text-center col-4">
+        <div class="card rounded-3 shadow-sm">
+            <div class="card-header py-3">
+                <h4 class="my-0 fw-normal">Номер рассылки - {{ object.pk }}</h4>
+                <h4 class="card-title pricing-card-title">{{ object.status_mailing }}</h4>
+            </div>
+            <div class="card-body">
+                <div>
+                <p>Время первой отправки: {{ object.start_time }}</p>
+                <p>Период рассылки: {{ object.frequency_mailing }}</p>
+                <p>Тема сообщения: {{ object.message.subject }}</p>
+                <p>Текст сообщения: {{ object.message.body }}</p>
+                </div>
+                <p>
+                    Клиенты для рассылок:
+                </p>
+                {% for object in object_client|slice:100 %}
+                    <div>
+                        {{ object }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
